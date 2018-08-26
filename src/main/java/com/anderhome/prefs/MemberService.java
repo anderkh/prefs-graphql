@@ -38,11 +38,16 @@ public class MemberService {
 	private static final Log LOGGER = LogFactory.getLog(MemberService.class);
 
     @GraphQLQuery(name="member")
-    public Member member(@GraphQLArgument(name="id") Integer id) {
+    public Member member(@GraphQLArgument(name="id") Integer id,
+    					 @GraphQLArgument(name="sessionToken") String sessionToken) throws InvalidSessionTokenException {
     	ObjectContext oc = cayenneService.newObjectContext();
     	Member member = Cayenne.objectForPK(oc, Member.class, id);
     	
-        return member;
+    	if (sessionToken != null && sessionToken.hashCode() == member.getSessionTokenHash().intValue()) {
+    		return member;
+    	} else {
+    		throw new InvalidSessionTokenException("[401] Invalid Session Token");
+    	}
     }
     
     @GraphQLQuery
