@@ -11,4 +11,5 @@ bin
 /build/
 gradle-app.setting
 !gradle-wrapper.jar
+.settings
 
