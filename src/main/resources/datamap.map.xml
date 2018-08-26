@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data-map xmlns="http://cayenne.apache.org/schema/9/modelMap"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://cayenne.apache.org/schema/9/modelMap https://cayenne.apache.org/schema/9/modelMap.xsd"
+	 project-version="9">
+	<property name="defaultPackage" value="com.anderhome.prefs.model"/>
+	<db-entity name="member">
+		<db-attribute name="bcrypt_password" type="VARCHAR" length="100"/>
+		<db-attribute name="email_address" type="VARCHAR" length="50"/>
+		<db-attribute name="first_name" type="VARCHAR" length="20"/>
+		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
+		<db-attribute name="last_name" type="VARCHAR" length="30"/>
+		<db-attribute name="phone_number" type="VARCHAR" length="20"/>
+		<db-attribute name="photo" type="BLOB"/>
+		<db-attribute name="session_token_hash" type="INTEGER"/>
+	</db-entity>
+	<db-entity name="member_profile_question">
+		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
+		<db-attribute name="member_id" type="INTEGER" isMandatory="true"/>
+		<db-attribute name="profile_question_id" type="INTEGER" isMandatory="true"/>
+	</db-entity>
+	<db-entity name="member_profile_question_option">
+		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
+		<db-attribute name="member_profile_question_id" type="INTEGER" isMandatory="true"/>
+		<db-attribute name="profile_question_option_id" type="INTEGER" isMandatory="true"/>
+		<db-attribute name="ranking" type="SMALLINT" isMandatory="true"/>
+	</db-entity>
+	<db-entity name="profile_question">
+		<db-attribute name="descr" type="VARCHAR" length="512"/>
+		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
+		<db-attribute name="is_active" type="BIT" isMandatory="true"/>
+		<db-attribute name="ordinal" type="INTEGER" isMandatory="true"/>
+		<db-attribute name="title" type="VARCHAR" isMandatory="true" length="100"/>
+	</db-entity>
+	<db-entity name="profile_question_option">
+		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
+		<db-attribute name="profile_question_id" type="INTEGER"/>
+		<db-attribute name="question_option" type="VARCHAR" length="200"/>
+	</db-entity>
+	<obj-entity name="Member" className="com.anderhome.prefs.model.Member" dbEntityName="member">
+		<obj-attribute name="bcryptPassword" type="java.lang.String" db-attribute-path="bcrypt_password"/>
+		<obj-attribute name="emailAddress" type="java.lang.String" db-attribute-path="email_address"/>
+		<obj-attribute name="firstName" type="java.lang.String" db-attribute-path="first_name"/>
+		<obj-attribute name="lastName" type="java.lang.String" db-attribute-path="last_name"/>
+		<obj-attribute name="phoneNumber" type="java.lang.String" db-attribute-path="phone_number"/>
+		<obj-attribute name="photo" type="byte[]" db-attribute-path="photo"/>
+		<obj-attribute name="sessionTokenHash" type="java.lang.Integer" db-attribute-path="session_token_hash"/>
+	</obj-entity>
+	<obj-entity name="MemberProfileQuestion" className="com.anderhome.prefs.model.MemberProfileQuestion" dbEntityName="member_profile_question">
+	</obj-entity>
+	<obj-entity name="MemberProfileQuestionOption" className="com.anderhome.prefs.model.MemberProfileQuestionOption" dbEntityName="member_profile_question_option">
+		<obj-attribute name="ranking" type="java.lang.Short" db-attribute-path="ranking"/>
+	</obj-entity>
+	<obj-entity name="ProfileQuestion" className="com.anderhome.prefs.model.ProfileQuestion" dbEntityName="profile_question">
+		<obj-attribute name="descr" type="java.lang.String" db-attribute-path="descr"/>
+		<obj-attribute name="isActive" type="boolean" db-attribute-path="is_active"/>
+		<obj-attribute name="ordinal" type="java.lang.Integer" db-attribute-path="ordinal"/>
+		<obj-attribute name="title" type="java.lang.String" db-attribute-path="title"/>
+	</obj-entity>
+	<obj-entity name="ProfileQuestionOption" className="com.anderhome.prefs.model.ProfileQuestionOption" dbEntityName="profile_question_option">
+		<obj-attribute name="questionOption" type="java.lang.String" db-attribute-path="question_option"/>
+	</obj-entity>
+	<db-relationship name="member_profile_questions" source="member" target="member_profile_question" toMany="true">
+		<db-attribute-pair source="id" target="member_id"/>
+	</db-relationship>
+	<db-relationship name="member" source="member_profile_question" target="member" toMany="false">
+		<db-attribute-pair source="member_id" target="id"/>
+	</db-relationship>
+	<db-relationship name="member_profile_question_options" source="member_profile_question" target="member_profile_question_option" toMany="true">
+		<db-attribute-pair source="id" target="member_profile_question_id"/>
+	</db-relationship>
+	<db-relationship name="profile_question" source="member_profile_question" target="profile_question" toMany="false">
+		<db-attribute-pair source="profile_question_id" target="id"/>
+	</db-relationship>
+	<db-relationship name="member_profile_question" source="member_profile_question_option" target="member_profile_question" toMany="false">
+		<db-attribute-pair source="member_profile_question_id" target="id"/>
+	</db-relationship>
+	<db-relationship name="profile_question_option" source="member_profile_question_option" target="profile_question_option" toMany="false">
+		<db-attribute-pair source="profile_question_option_id" target="id"/>
+	</db-relationship>
+	<db-relationship name="profile_question_options" source="profile_question" target="profile_question_option" toMany="true">
+		<db-attribute-pair source="id" target="profile_question_id"/>
+	</db-relationship>
+	<db-relationship name="profile_question" source="profile_question_option" target="profile_question" toMany="false">
+		<db-attribute-pair source="profile_question_id" target="id"/>
+	</db-relationship>
+	<obj-relationship name="memberProfileQuestions" source="Member" target="MemberProfileQuestion" deleteRule="Cascade" db-relationship-path="member_profile_questions"/>
+	<obj-relationship name="member" source="MemberProfileQuestion" target="Member" deleteRule="Nullify" db-relationship-path="member"/>
+	<obj-relationship name="memberProfileQuestionOptions" source="MemberProfileQuestion" target="MemberProfileQuestionOption" deleteRule="Cascade" db-relationship-path="member_profile_question_options"/>
+	<obj-relationship name="profileQuestion" source="MemberProfileQuestion" target="ProfileQuestion" deleteRule="Nullify" db-relationship-path="profile_question"/>
+	<obj-relationship name="memberProfileQuestion" source="MemberProfileQuestionOption" target="MemberProfileQuestion" deleteRule="Nullify" db-relationship-path="member_profile_question"/>
+	<obj-relationship name="profileQuestionOption" source="MemberProfileQuestionOption" target="ProfileQuestionOption" deleteRule="Nullify" db-relationship-path="profile_question_option"/>
+	<obj-relationship name="profileQuestionOptions" source="ProfileQuestion" target="ProfileQuestionOption" deleteRule="Cascade" db-relationship-path="profile_question_options"/>
+	<obj-relationship name="profileQuestion" source="ProfileQuestionOption" target="ProfileQuestion" deleteRule="Nullify" db-relationship-path="profile_question"/>
+</data-map>
