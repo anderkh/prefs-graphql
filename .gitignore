@@ -1,2 +1,14 @@
+*.class
 bin
-build
+.classpath
+.project
+.metadata/
+.DS_Store
+*.jar
+*.war
+*.ear
+.gradle
+/build/
+gradle-app.setting
+!gradle-wrapper.jar
+
