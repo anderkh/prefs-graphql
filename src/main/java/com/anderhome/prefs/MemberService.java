@@ -70,8 +70,6 @@ public class MemberService {
     public Member createEmailMember(@GraphQLArgument(name="firstName") String firstName,
     							@GraphQLArgument(name="lastName") String lastName,
     							@GraphQLArgument(name="emailAddress") String emailAddress,
-    							@GraphQLArgument(name="phoneNumber") String phoneNumber,
-    							@GraphQLArgument(name="photo") byte[] photo,
     							@GraphQLArgument(name="password") String password) throws DuplicateEmailException {
 
     	ObjectContext oc = cayenneService.newObjectContext();
@@ -81,9 +79,7 @@ public class MemberService {
 	    	Member newMember = oc.newObject(Member.class);
 	    	newMember.setFirstName(firstName);
 	    	newMember.setLastName(lastName);
-	    	newMember.setPhoneNumber(phoneNumber);
 	    	newMember.setEmailAddress(emailAddress);
-	    	newMember.setPhoto(photo);
 	    	
 	    	String pw_hash = BCrypt.hashpw(password, BCrypt.gensalt()); 
 	    	newMember.setBcryptPassword(pw_hash);
